@@ -360,10 +360,11 @@ $(document).ready(function(){
     }
     let invaderBullets = [];
    
-    function moveInvaderBullet(){
+   function moveInvaderBullet(){
         if (invaderBullets.length === 0){
             const randomIndex = Math.floor(Math.random() + invaders.length);
             const invader = invaders[randomIndex];
+            const invaderPosition = invader.invader_imageElement.position();
 
         }
         for(let i = invaderBullets.length - 1; i >= 0; i--){
@@ -394,6 +395,7 @@ $(document).ready(function(){
         requestAnimationFrame(moveInvaderBullet);
     } 
     requestAnimationFrame(moveInvaderBullet);
+
 
 
 
