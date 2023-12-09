@@ -6,7 +6,7 @@ $(document).ready(function(){
                 this.src = src;
                 this.alt = alt;
                 this.container = container;
-                this.x = x;
+                this.x = x; 
                 this.y = y;
                 this.defender_imageElement = $('<img>', {
                     src: this.src,
@@ -33,6 +33,7 @@ $(document).ready(function(){
                     this.x -= 15; 
                     if (this.x < containerLeft){
                         this.x = containerLeft;
+                        //to make it stop at the container boundary 
                     }
                 } else if (direction === 'right'){
                     this.x += 15;
@@ -45,7 +46,7 @@ $(document).ready(function(){
                 this.defender_imageElement.css('left', this.x + 'px' );
             }
 
-            checkIfDefenderHit(bullet){
+           /* checkIfDefenderHit(bullet){
                 const bulletPosition = bullet.bullet_imageElement.position();
                 const defenderPosition = this.defender_imageElement.position();
 
@@ -63,10 +64,10 @@ $(document).ready(function(){
 
             hideDefender(){
                 this.defender_imageElement.remove();
-            }
+            }*/
     
         }
-    
+    //keypress functions which help move defender
             $(document).keydown(function(e){
                 if (e.which === 37){
                     space_cat.move('left');
@@ -79,22 +80,24 @@ $(document).ready(function(){
     
     
        
+    // part of main programme
+    const space_cat = new Defender ('spacecat.png', 'space cat', 370, 560, '#gamecontainer');
+    space_cat.append_defenderImage();
+    space_cat.move();
     
-        const space_cat = new Defender ('spacecat.png', 'space cat', 370, 560, '#gamecontainer');
-        space_cat.append_defenderImage();
-        space_cat.move();
-    
-    
+    //invader array
     let invaders = [];
+
+    //invader class definition
     class Invader {
         constructor(src, alt, speed, direction, x, y, container){
             this.src = src;
             this.alt = alt;
             this.speed = speed;
             this.direction = direction;
-            this.x = x;
-            this.y = y;
-            this.container = container;
+            this.x = x; //x position of a single invader 
+            this.y = y; //y position of a single invader 
+            this.container = container; //consider switching to game container if that's more efficient 
             this.invader_imageElement = $('<img>', {
                 src: this.src,
                 alt: this.alt
@@ -111,10 +114,11 @@ $(document).ready(function(){
                 $(this.container).append(this.invader_imageElement);
     
             }
+            //this moves the invaders from left to right and vice versa at a certain speed 
             move(){
                 const containerWidth = $(this.container).width();
                 const invaderWidth = this.invader_imageElement.width();
-
+            
 
                 if (this.direction === 'right'){
                     this.x += this.speed;
@@ -137,31 +141,37 @@ $(document).ready(function(){
             hideInvader(){
                 this.invader_imageElement.remove();
             }
-            shoot(){    
-                const bullet = new Bullet(
+
+           shoot(){    
+                const randomInvaderIndex = Math.floor(Math.random() * invaders.length);
+                const randomInvader = invaders[randomInvaderIndex];
+
+                const bullet = new InvaderBullets (
+                    randomInvader.x + randomInvader/this.invader_imageElement.width() / 2,
+                    randomInvader.y + randomInvader.invader_imageElement.height(), '#gamecontainer'
+                );
+                /*const bullet = new Bullet(
                     this.x + this.invader_imageElement.width() / 2,
                      this.y + this.invader_imageElement.height(),
-                      '#invadercontainer');
+                      '#gamecontainer');*/
             
             bullet.appendBullet();
             invaderBullets.push(bullet);
                 }
     
     }
+    let invaderBullets = []; 
 
-    /*let invaderBullets = [];*/ 
-    
+   
+    //function to create a grid of invaders - invader class instantised inside this function
     function invaderGrid (rows, columns, container){
         initialPosition = 0;
         for (let i = 0; i < rows; i++){
             for (let j = 0; j < columns; j++){
-                const x = 0 + j * 70;
-                const y = i * 70;
+                const x = 0 + j * 66;
+                const y = i * 66;
     
-            
-           
-    
-            const space_mouse = new Invader('spacemouse.png', 'space mouse', 3, 'right', x, y, container);
+            const space_mouse = new Invader('spacemouse.png', 'space mouse', 2, 'right', x, y, container);
             invaders.push(space_mouse);
             space_mouse.append_invaderImage();
             }
@@ -169,53 +179,78 @@ $(document).ready(function(){
 
     
     }
-    
-    invaderGrid(5, 8,'#invadercontainer');
+    //invader grid created 
+    invaderGrid(5, 8,'#gamecontainer');
 
-    
+    //moves invaders down once they reach container edge 
     function moveInvaders() {
         let moveDown = false;
-    
-        for (let i = 0; i < invaders.length; i++) {
-            if (invaders[i].move()) {
+        let changeDirection = false;
+        const containerWidth = $('#gamecontainer').width();    
+       const containerHeight = $('#resetinvaders').height();  
+       
+        //moves individual elements of the array down at the same time 
+        invaders.forEach(function(invader, index){
+            if (invader.move()){
                 moveDown = true;
+                changeDirection = true;
             }
+
+
+            if(invader.y + invader.invader_imageElement.height() >= containerHeight){
+                if (index === invaders.length - 1){
+                    resetInvaderGrid();
+                }
+                changeDirection = true;
+            }
+
+            if (invader.x + invader.invader_imageElement.width() >= containerWidth || invader.x <= 0){
+                moveDown = true;
+                changeDirection = true;
+            }
+        });
+        if (moveDown) {
+            invaders.forEach(function(invader){
+                invader.y += 50;
+                invader.invader_imageElement.css('top', invader.y + 'px');
+            });
+
+            invaderBullets.forEach(function(bullet) {
+                bullet.hideBullet();
+            }); 
+            
+            if(changeDirection){
+                invaders.forEach(function(invader){
+                    invader.direction = (invader.direction === 'right') ? 'left' : 'right';
+                });
+            }
+
+            
         }
-            if (moveDown) {
-                $('#invadercontainer').css('top', '+=50px');
-                
+        requestAnimationFrame(moveInvaders);
+    }
+    requestAnimationFrame(moveInvaders); 
 
-                for (let i = 0; i < invaders.length; i++){
-                    if (invaders[i].direction === 'right'){
-                        invaders[i].direction = 'left';
-                    } else {
-                        invaders[i].direction = 'right';
-                    }
-                    if (Math.random() < 0.02 ){
-                        invaders[i].shoot();
-                    }
-                } 
-              
+    //creates new invader grid when the invaders reach the bottom of the resetinvaders container 
 
-                }   
-                invaderShoot()
-                requestAnimationFrame(moveInvaders);
+    function resetInvaderGrid(){
+        invaders.forEach(function(invader){
+            invader.hideInvader();
+        });
+        invaders = [];
 
-    } 
-    requestAnimationFrame(moveInvaders);
-
-
-       /* here, after ifmovedown is closed*/
+        //new invader grid 
+        invaderGrid(5, 8, '#gamecontainer')
+    }
     
-
-
     function endGame(){
         alert('Game Over. Final Score: ' + score);
     }
 
+    //defender bullet 
     class Bullet {
         constructor(x, y, container){
-            this.x = x - 15;
+            this.x = x - 15; //setting position relative to defender image size
             this.y = y - 30;
             this.container = container;
             this.bullet_imageElement = $('<img>', {
@@ -229,11 +264,11 @@ $(document).ready(function(){
         }
 
         appendBullet(){
-            $(this.container).append(this.bullet_imageElement);
+            $(this.container).append(this.bullet_imageElement); //appending defender bullet to the game container
         }
         move(){
 
-            this.y -= 10;
+            this.y -= 10; //moves up by 10 pixels 
             this.bullet_imageElement.css('top', this.y + 'px');
 
             if(this.y > $(this.container).height()){
@@ -308,7 +343,7 @@ $(document).ready(function(){
     }
     newScore();
 
-
+//creating invader bullets 
     class InvaderBullets {
         constructor(x, y, container){
             this.x = x - 15;
@@ -358,13 +393,14 @@ $(document).ready(function(){
         }
     
     }
-    let invaderBullets = [];
+
+    //let invaderBullets = [];
    
-   function moveInvaderBullet(){
+   /*function moveInvaderBullet(){
         for(let i = invaderBullets.length - 1; i >= 0; i--){
             const bullet = invaderBullets[i];
 
-
+//im suspicious of this part 
             if(bullet.move()){
                 invaderBullets.splice(i, 1);
             } else {
@@ -391,8 +427,6 @@ $(document).ready(function(){
     requestAnimationFrame(moveInvaderBullet);
 
 
-
-
     function invaderShoot(){
         for (let i = 0; i < invaders.length; i++){
             if(Math.random() < 0.0000001){
@@ -408,6 +442,7 @@ $(document).ready(function(){
         }
         requestAnimationFrame(invaderShoot);
         }
+        requestAnimationFrame(invaderShoot);*/
 
     });
     
