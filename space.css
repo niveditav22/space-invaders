@@ -1,0 +1,63 @@
+@font-face {
+    font-family: 'StarJedi';
+    src: url(Starjedi.ttf);
+}
+
+html {
+    background-color: black;
+}
+
+.header-wrapper {
+    font-family: 'StarJedi';
+    font-size: 15px;
+    margin-left: 32em;
+    color:gold;
+    margin-top: 4vh;
+
+}
+
+
+#gamecontainer {
+    width: 800px;
+    height: 650px; 
+    position: fixed; 
+    margin-left: 325px;
+    margin-top: 50px;
+    background-image: url(space.png);
+    background-repeat: no-repeat;
+   
+}
+
+#invadercontainer {
+    position: fixed;
+    height: 350px;
+    width: 784px;
+    left: 325px;
+    top: 150px;
+
+}
+
+#resetinvaders {
+    position: fixed;
+    height: 600px;
+    width: 784px;
+    left: 352px;
+    top: 200px;
+}
+
+#score {
+    font-family: 'StarJedi';
+    font-size: 20px;
+    color:antiquewhite;
+    top: 50px;
+    margin-left: 650px;
+}
+
+#bulletcontainer {
+    position: fixed;
+    height: 650px;
+    width: 784px;
+    left: 352px;
+    top: 200px;
+
+}
