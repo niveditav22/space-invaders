@@ -46,7 +46,7 @@ $(document).ready(function(){
                 this.defender_imageElement.css('left', this.x + 'px' );
             }
 
-            /*checkIfDefenderHit(bullet){
+        checkIfDefenderHit(bullet){
                 const bulletPosition = bullet.bullet_imageElement.position();
                 const defenderPosition = this.defender_imageElement.position();
 
@@ -60,7 +60,7 @@ $(document).ready(function(){
     
                 }
                 return false;
-            }*/
+            }
 
             hideDefender(){
                 this.defender_imageElement.remove();
@@ -130,6 +130,7 @@ $(document).ready(function(){
         checkIfHit(invader){
             const bulletPosition = this.bullet_imageElement.position();
             const invaderPosition = invader.invader_imageElement.position();
+            console.log(bulletPosition);
 
             if (bulletPosition.left < invaderPosition.left + invader.invader_imageElement.width() &&
                 bulletPosition.left + this.bullet_imageElement.width() > invaderPosition.left &&
@@ -207,7 +208,7 @@ $(document).ready(function(){
             this.direction = direction;
             this.x = x; //x position of a single invader 
             this.y = y; //y position of a single invader 
-            this.container = container; //consider switching to game container if that's more efficient 
+            this.container = container; 
             this.invader_imageElement = $('<img>', {
                 src: this.src,
                 alt: this.alt
@@ -255,26 +256,6 @@ $(document).ready(function(){
                 this.invader_imageElement.remove();
             
             }
-
-           /*shoot(){   
-            
-
-                const randomInvaderIndex = Math.floor(Math.random() * invaders.length);
-                const randomInvader = invaders[randomInvaderIndex];
-
-                const invaderbullet = new InvaderBullets (
-                    randomInvader.x + randomInvader.invader_imageElement.width() / 2,
-                    randomInvader.y + randomInvader.invader_imageElement.height(), '#gamecontainer'
-                );
-                /*const bullet = new Bullet(
-                    this.x + this.invader_imageElement.width() / 2,
-                     this.y + this.invader_imageElement.height(),
-                      '#gamecontainer');
-            
-            invaderbullet.appendBullet();
-            invaderBullets.push(bullet);
-                }
-                */
                 
     
     }
@@ -320,9 +301,6 @@ $(document).ready(function(){
                 }
                 changeDirection = true;
             }
-           /* if(Math.random() < 0.0022){
-                invader.shoot();
-            }*/ 
 
             if (invader.x + invader.invader_imageElement.width() >= containerWidth || invader.x <= 0){
                 moveDown = true;
@@ -335,17 +313,11 @@ $(document).ready(function(){
                 invader.invader_imageElement.css('top', invader.y + 'px');
             });
 
-           /*invaderBullets.forEach(function(bullet) {
-                bullet.hideBullet();
-            }
-            ); */
-            
             if(changeDirection){
                 invaders.forEach(function(invader){
                     invader.direction = (invader.direction === 'right') ? 'left' : 'right';
                 });
             }
-
     
 
             
@@ -366,14 +338,15 @@ $(document).ready(function(){
         invaderGrid(5, 8, '#gamecontainer')
     }
     
-    /*function endGame(){
+    function endGame(){
         alert('Game Over. Final Score: ' + score);
-    }*/
+    }
 
 
 
 
     //---INVADER BULLETS---//
+
 
 
 //creating invader bullets 
@@ -398,8 +371,8 @@ $(document).ready(function(){
         }
 
         move(){
-            //moves down by 20px 
-            this.y += 10;
+            //moves down by 5px 
+            this.y += 5;
             //positon updated
             this.bullet_imageElement.css('top', this.y + 'px');
             //when bullet leaves container it must disappear 
@@ -414,26 +387,31 @@ $(document).ready(function(){
             this.bullet_imageElement.remove();
         }
 
-        checkIfDefenderHit(defender){
+       checkIfHit(defender){
             const bulletPosition = this.bullet_imageElement.position();
             const defenderPosition = defender.defender_imageElement.position();
+            console.log(bulletPosition);
+            console.log(defenderPosition);
 
-            if (
-                bulletPosition.left < defenderPosition.left + defender.defender_imageElement.width() &&
-                bulletPosition.left + this.bullet_imageElement.width() < defenderPosition.left &&
+            if (bulletPosition.left < defenderPosition.left + defender.defender_imageElement.width() &&
+                bulletPosition.left + this.bullet_imageElement.width() > defenderPosition.left &&
                 bulletPosition.top < defenderPosition.top + defender.defender_imageElement.height() &&
-                bulletPosition.top + this.bullet_imageElement.height() + defenderPosition.top){
-                    return true
-                }       
-                return false;    
-             
+                bulletPosition.top + this.bullet_imageElement.height() > defenderPosition.top){
+                
+        
+                    return true 
+
+            }
+            return false;
         }
 
- 
     }
- 
+
+
+
+
 function invaderShoot(){
-    if(Math.random() < 0.002){
+    if(Math.random() < 0.01){
         const randomInvaderIndex = Math.floor(Math.random() * invaders.length);
         const randomInvader = invaders[randomInvaderIndex];
 
@@ -449,94 +427,26 @@ function invaderShoot(){
 
     requestAnimationFrame(invaderShoot);
 }
-
 function moveInvaderBullet(bullet){
     function animateBullet(){
-        if(bullet.move()) {
+        if(bullet.move()){
             invaderBullets.splice(invaderBullets.indexOf(bullet), 1);
         } else {
+            if (bullet.checkIfHit(space_cat)){
+                    bullet.hideBullet();
+                    space_cat.hideDefender();
+         } else {
             requestAnimationFrame(animateBullet);
         }
+        
+    
     }
-    requestAnimationFrame(animateBullet);
+}
+requestAnimationFrame(animateBullet);
+animateBullet();
 }
 invaderShoot();
 
+//-----DOCUMENTREADY TAGS CLOSED -----//
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//let invaderBullets = [];
-   
-  /*function moveInvaderBullet(){
-        for(let i = invaderBullets.length - 1; i >= 0; i--){
-            const invaderbullet = invaderBullets[i];
-
-            invaderbullet.move();
-
-            if(!invaderbullet.move()) {
-                requestAnimationFrame(moveInvaderBullet);
-            } else {
-                invaderBullets.splice(i, 1);
-            }
-
-//im suspicious of this part 
-           /* if(invaderbullet.move()){
-                InvaderBullets.splice(i, 1);
-            } else {
-                //bullet.move();*/ 
-
-            /*const defenderPosition = space_cat.defender_imageElement.position();
-            const bulletPosition = invaderbullet.bullet_imageElement.position();
-
-                console.log('bullet position: ', bulletPosition);
-
-            if(bulletPosition.left < defenderPosition.left + space_cat.defender_imageElement.width() &&
-                bulletPosition.left + invaderbullet.bullet_imageElement.width() > defenderPosition.left &&
-                bulletPosition.top < defenderPosition.top + space_cat.defender_imageElement.height() &&
-                bulletPosition.top + invaderbullet.bullet_imageElement.height() + defenderPosition.top
-                ){
-                invaderbullet.hideBullet();
-                space_cat.hideDefender();
-                endGame();
-                return;
-                }
-            }
-           
-        }
-        requestAnimationFrame(moveInvaderBullet); 
-    }
-    
-    //requestAnimationFrame(moveInvaderBullet); 
-
-
-    /*function invaderShoot(){
-        for (let i = 0; i < invaders.length; i++){
-            if(Math.random() < 0.0000001){
-                const invader = invaders[i];
-                const invaderPosition = invader.invader_imageElement.position();
-
-                const bullet = new InvaderBullets(
-                invaderPosition.left, invaderPosition.top, '#invadercontainer');
-                bullet.appendBullet();
-                bullet.checkIfDefenderHit(space_cat);
-                invaderBullets.push(bullet);
-            }
-        }
-        requestAnimationFrame(invaderShoot);
-        }
-        requestAnimationFrame(invaderShoot);*/ 
-
-    });
-    
+});
