@@ -9,37 +9,28 @@ html {
 
 .header-wrapper {
     font-family: 'StarJedi';
-    font-size: 15px;
-    margin-left: 32em;
+    font-size: 12px;
+    margin-left: 545px;
     color:gold;
-    margin-top: 4vh;
+    margin-top: 15px;
 
 }
-
 
 #gamecontainer {
-    width: 800px;
+    width: 850px;
     height: 650px; 
     position: fixed; 
-    margin-left: 325px;
-    margin-top: 50px;
+    margin-left: 300px;
+    margin-top: 90px;
     background-image: url(space.png);
-    background-repeat: no-repeat;
-   
-}
-
-#invadercontainer {
-    position: fixed;
-    height: 350px;
-    width: 784px;
-    left: 325px;
-    top: 150px;
+    background-repeat: no-repeat
 
 }
+
 
 #resetinvaders {
     position: fixed;
-    height: 600px;
+    height: 550px;
     width: 784px;
     left: 352px;
     top: 200px;
@@ -49,15 +40,17 @@ html {
     font-family: 'StarJedi';
     font-size: 20px;
     color:antiquewhite;
-    top: 50px;
-    margin-left: 650px;
+    top: 40px;
+    margin-left: 325px;
+    width: 200px;
 }
 
-#bulletcontainer {
-    position: fixed;
-    height: 650px;
-    width: 784px;
-    left: 352px;
-    top: 200px;
+
+#lives {
+    font-family: 'StarJedi';
+    font-size: 20px;
+    color:antiquewhite;
+    top: 50px;
+    margin-left: 325px;
 
 }
