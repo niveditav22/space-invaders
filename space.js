@@ -457,8 +457,6 @@ $(document).ready(function(){
                 } else {
                         if (bullet.checkIfHit(space_cat)){
                         bullet.hideBullet();
-                        //decreaseLives();
-                        //space_cat.hideDefender();
                 } else {
                     requestAnimationFrame(animateBullet);
             }
@@ -467,12 +465,13 @@ $(document).ready(function(){
 
     } 
 }
-    //requestAnimationFrame(animateBullet);
+    
     animateBullet();
     }
     updateLives();
     invaderShoot();
+
     
-    //-----DOCUMENTREADY TAGS CLOSED -----//
+    //-----DOCUMENTREADY TAGS CLOSED -----//*/
     
     });
